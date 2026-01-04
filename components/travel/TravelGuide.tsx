@@ -23,6 +23,7 @@ const TravelGuide: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'itinerary' | 'places' | 'food'>('itinerary');
   const [view, setView] = useState<'dashboard' | 'search' | 'plan'>('dashboard');
   const [currentPlan, setCurrentPlan] = useState<SavedPlan | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>(() => {
     const saved = localStorage.getItem('omni_saved_travels');
     return saved ? JSON.parse(saved) : [];
@@ -35,6 +36,7 @@ const TravelGuide: React.FC = () => {
   const handleGenerate = async () => {
     if (!destination.trim()) return;
     setLoading(true);
+    setErrorMessage(null);
     try {
       const result = await getTravelPlanning(destination, days);
       const newPlan: SavedPlan = {
@@ -48,7 +50,11 @@ const TravelGuide: React.FC = () => {
       setCurrentPlan(newPlan);
       setView('plan');
     } catch (error) {
-      alert("Error al generar el viaje. Revisa tu conexión.");
+      console.error(error);
+      const message = error instanceof Error
+        ? error.message
+        : "Error al generar el viaje. Revisa tu conexión.";
+      setErrorMessage(message);
     } finally {
       setLoading(false);
     }
@@ -102,7 +108,7 @@ const TravelGuide: React.FC = () => {
           <h2 className="text-lg font-black uppercase tracking-tight">Omni-Travel</h2>
         </div>
         {view === 'dashboard' && (
-          <button 
+          <button
             onClick={() => setView('search')}
             className="w-9 h-9 bg-cyan-600 text-white rounded-xl shadow-lg shadow-cyan-600/20 flex items-center justify-center active:scale-90 transition-all"
           >
@@ -110,6 +116,12 @@ const TravelGuide: React.FC = () => {
           </button>
         )}
       </header>
+
+      {errorMessage && (
+        <div className="bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 text-red-700 dark:text-red-200 rounded-2xl p-4 text-sm font-semibold">
+          {errorMessage}
+        </div>
+      )}
 
       {view === 'dashboard' && (
         <div className="space-y-6">

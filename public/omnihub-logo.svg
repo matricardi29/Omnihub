@@ -1,0 +1,56 @@
+<svg width="1200" height="1200" viewBox="0 0 1200 1200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">OmniHub Logo</title>
+  <desc id="desc">A neon gradient network surrounding a central O icon above the OmniHub wordmark.</desc>
+  <defs>
+    <linearGradient id="bg" x1="200" y1="80" x2="1100" y2="1050" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0b1b3e" />
+      <stop offset="0.45" stop-color="#0a1231" />
+      <stop offset="1" stop-color="#001428" />
+    </linearGradient>
+    <linearGradient id="node" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#71E8FF" />
+      <stop offset="1" stop-color="#9F7BFF" />
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#6FE3FF" />
+      <stop offset="1" stop-color="#6A6DFF" />
+    </linearGradient>
+    <linearGradient id="word" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#FFFFFF" />
+      <stop offset="1" stop-color="#B8D8FF" />
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="14" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="1200" rx="120" fill="url(#bg)" />
+  <g filter="url(#glow)">
+    <g stroke="url(#node)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+      <path d="M330 430 L540 320 L700 360 L850 480 L820 690 L640 780 L420 720 L360 540 Z" />
+      <path d="M420 720 L330 430 M540 320 L420 720 M700 360 L640 780 M850 480 L540 320 M850 480 L640 780 M360 540 L700 360 M360 540 L820 690" />
+    </g>
+    <g fill="url(#node)">
+      <circle cx="330" cy="430" r="26" />
+      <circle cx="540" cy="320" r="26" />
+      <circle cx="700" cy="360" r="26" />
+      <circle cx="850" cy="480" r="26" />
+      <circle cx="820" cy="690" r="26" />
+      <circle cx="640" cy="780" r="26" />
+      <circle cx="420" cy="720" r="26" />
+      <circle cx="360" cy="540" r="26" />
+    </g>
+    <g opacity="0.9">
+      <circle cx="600" cy="520" r="240" stroke="url(#ring)" stroke-width="28" fill="none" />
+      <circle cx="600" cy="520" r="140" fill="#0f1c3f" stroke="url(#ring)" stroke-width="18" />
+      <circle cx="600" cy="520" r="80" fill="url(#node)" />
+    </g>
+  </g>
+  <g transform="translate(600 950)" text-anchor="middle">
+    <text y="0" fill="url(#word)" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="140" font-weight="800" letter-spacing="4">OMNIHUB</text>
+    <text y="70" fill="#91bdf7" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="36" font-weight="700" letter-spacing="6">INTELLIGENT CORE</text>
+  </g>
+</svg>
