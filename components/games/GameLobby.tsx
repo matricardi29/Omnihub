@@ -43,40 +43,40 @@ const GameLobby: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <header className="flex items-center gap-3">
-        <Logo size={44} variant="games" />
+    <div className="space-y-5 animate-in fade-in duration-500">
+      <header className="flex items-center gap-2.5">
+        <Logo size={26} variant="games" />
         <div>
-          <h2 className="text-2xl font-black tracking-tight uppercase">Omni-Games</h2>
-          <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Multiplayer Arena</p>
+          <h2 className="text-lg font-black tracking-tight uppercase">Omni-Games</h2>
+          <p className="text-[8px] font-bold text-slate-500 uppercase tracking-[0.22em]">Multiplayer Arena</p>
         </div>
       </header>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {games.map((game) => (
-          <div 
+          <div
             key={game.id}
-            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-[2rem] p-5 shadow-lg active:scale-[0.98] transition-all"
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-3.5 shadow-sm active:scale-[0.99] transition-all"
           >
-            <div className="flex items-center gap-5">
-              <div className={`w-16 h-16 bg-gradient-to-br ${game.color} rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-amber-500/10`}>
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 bg-gradient-to-br ${game.color} rounded-lg flex items-center justify-center text-xl shadow-sm shadow-amber-500/10`}>
                 {game.icon}
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="text-sm font-black uppercase tracking-tight">{game.name}</h3>
+                  <h3 className="text-[13px] font-black uppercase tracking-tight">{game.name}</h3>
                   <span className="text-[8px] font-bold px-2 py-0.5 bg-slate-100 dark:bg-white/5 rounded text-slate-500 uppercase tracking-widest">{game.players}</span>
                 </div>
-                <p className="text-[10px] text-slate-600 dark:text-slate-400 font-medium mb-3">{game.desc}</p>
+                <p className="text-[10px] text-slate-600 dark:text-slate-400 font-medium mb-2 leading-snug">{game.desc}</p>
                 <div className="flex gap-2">
-                  <button 
+                  <button
                     onClick={() => navigate(`/games/${game.id}/${Math.random().toString(36).substring(7)}`)}
-                    className="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"
+                    className="flex-1 py-2 bg-indigo-600 text-white rounded-lg font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm"
                   >
-                    <Plus size={14} /> Jugar Ahora
+                    <Plus size={12} /> Jugar Ahora
                   </button>
-                  <button className="p-2.5 bg-slate-100 dark:bg-white/5 text-slate-400 rounded-xl">
-                    <Info size={16} />
+                  <button className="p-2 bg-slate-100 dark:bg-white/5 text-slate-400 rounded-lg">
+                    <Info size={13} />
                   </button>
                 </div>
               </div>
