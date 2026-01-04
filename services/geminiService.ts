@@ -74,29 +74,64 @@ export async function editAiImage(base64Image: string, prompt: string, mimeType:
 /**
  * Validates a Scrabble word using Gemini Flash-Lite.
  */
-export async function validateScrabbleWord(word: string): Promise<{ isValid: boolean; reason?: string }> {
+export async function validateScrabbleWord(word: string): Promise<{ isValid: boolean; reason?: string; existsInRAE?: boolean; definition?: string }> {
   const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
   try {
     const response = await ai.models.generateContent({
       model: "gemini-flash-lite-latest",
-      contents: `¿Es la palabra "${word}" válida en el Scrabble oficial en español? Responde solo en JSON con este esquema: {"isValid": boolean, "reason": string}`,
+      contents: `Evalúa la palabra "${word}".
+      1) ¿Es válida según las reglas oficiales de Scrabble en español?
+      2) ¿Existe en el Diccionario de la lengua española (RAE)?
+      3) Redacta una definición breve y ejemplo si existe.
+
+      Responde solo en JSON con este esquema exacto:
+      {"isValid": boolean, "existsInRAE": boolean, "reason": string, "definition": string}`,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
           properties: {
             isValid: { type: Type.BOOLEAN },
-            reason: { type: Type.STRING }
+            existsInRAE: { type: Type.BOOLEAN },
+            reason: { type: Type.STRING },
+            definition: { type: Type.STRING },
           },
-          required: ["isValid"]
+          required: ["isValid", "existsInRAE"]
         }
       }
     });
 
-    return JSON.parse(response.text || '{"isValid": false}');
+    return JSON.parse(response.text || '{"isValid": false, "existsInRAE": false}');
   } catch (error) {
     console.error("Error validating word:", error);
-    return { isValid: true };
+    return { isValid: true, existsInRAE: false };
+  }
+}
+
+export async function lookupWordMeaning(word: string): Promise<{ definition: string; example?: string; existsInRAE: boolean }> {
+  const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-flash-lite-latest",
+      contents: `Busca si la palabra "${word}" aparece en el diccionario de la RAE. Devuelve definición breve y un ejemplo en español. Responde en JSON: {"definition": string, "example": string, "existsInRAE": boolean}`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            definition: { type: Type.STRING },
+            example: { type: Type.STRING },
+            existsInRAE: { type: Type.BOOLEAN },
+          },
+          required: ["definition", "existsInRAE"],
+        },
+      },
+    });
+
+    return JSON.parse(response.text || '{"definition": "", "existsInRAE": false}');
+  } catch (error) {
+    console.error("Error looking up meaning:", error);
+    return { definition: "No se pudo obtener la definición.", existsInRAE: false };
   }
 }
 
