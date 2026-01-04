@@ -1,16 +1,29 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Gamepad2, TrendingUp, Bell, Clock, Sparkles, Compass, ChevronRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Gamepad2, TrendingUp, Bell, Clock, Sparkles, Compass, ChevronRight, User } from 'lucide-react';
 import Logo from './ui/Logo';
 
-const Home: React.FC = () => {
+interface HomeProps {
+  user: any;
+}
+
+const Home: React.FC<HomeProps> = ({ user }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
       <header className="flex items-center justify-between">
         <Logo showText size={28} variant="hub" />
-        <button className="w-8 h-8 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-white/5 flex items-center justify-center text-slate-400 shadow-sm">
-          <Bell size={16} />
+        <button 
+          onClick={() => navigate('/settings')}
+          className="w-10 h-10 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-white/5 flex items-center justify-center text-indigo-500 shadow-sm overflow-hidden active:scale-90 transition-all"
+        >
+          {user?.email ? (
+            <span className="font-black text-sm">{user.email.charAt(0).toUpperCase()}</span>
+          ) : (
+            <User size={18} />
+          )}
         </button>
       </header>
 
@@ -22,10 +35,10 @@ const Home: React.FC = () => {
             <Sparkles size={8} /> Omni-Engine Active
           </div>
           <h1 className="text-2xl font-black tracking-tight leading-tight">
-            Bienvenido al <br /><span className="text-indigo-600 dark:text-indigo-400 italic">Ecosistema Omni</span>
+            Hola, <span className="text-indigo-600 dark:text-indigo-400 italic">{user?.email?.split('@')[0]}</span>
           </h1>
           <p className="text-slate-400 text-[10px] font-medium leading-relaxed max-w-[180px]">
-            Tu entorno inteligente para juegos, finanzas y arte con IA.
+            Tu entorno inteligente para juegos, finanzas y arte con IA está listo.
           </p>
           <Link to="/creative" className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">
             Abrir Studio <ChevronRight size={14} />

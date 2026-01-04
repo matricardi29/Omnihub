@@ -1,16 +1,19 @@
 
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { LayoutDashboard, Gamepad2, TrendingUp, Sparkles, Compass } from 'lucide-react';
+import { supabase } from './lib/supabase';
 import Home from './components/Home';
 import GameLobby from './components/games/GameLobby';
 import Generala from './components/games/Generala';
 import Scrabble from './components/games/Scrabble';
 import Catan from './components/games/Catan';
+import PokerRoguelike from './components/games/PokerRoguelike';
 import InterestCalculator from './components/productivity/InterestCalculator';
 import ImageStudio from './components/creative/ImageStudio';
 import TravelGuide from './components/travel/TravelGuide';
-import ThemeToggle from './components/ui/ThemeToggle';
+import Settings from './components/profile/Settings';
+import Auth from './components/auth/Auth';
 
 const BottomNav = () => {
   const location = useLocation();
@@ -54,10 +57,23 @@ const BottomNav = () => {
 };
 
 const App: React.FC = () => {
+  const [session, setSession] = useState<any>(null);
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('theme');
     return saved ? saved === 'dark' : true;
   });
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -70,28 +86,30 @@ const App: React.FC = () => {
     }
   }, [isDark]);
 
+  if (!session) {
+    return <Auth />;
+  }
+
   return (
     <Router>
       <div className="min-h-screen bg-slate-50 dark:bg-[#050810] text-slate-900 dark:text-white flex flex-col transition-colors duration-500">
         <main className="flex-1 w-full relative pb-20">
           <div className="max-w-md mx-auto px-6 py-6 page-transition">
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home user={session.user} />} />
+              <Route path="/settings" element={<Settings isDark={isDark} toggleTheme={() => setIsDark(!isDark)} user={session.user} />} />
               <Route path="/games" element={<GameLobby />} />
               <Route path="/games/generala/:id" element={<Generala />} />
               <Route path="/games/scrabble/:id" element={<Scrabble />} />
               <Route path="/games/catan/:id" element={<Catan />} />
+              <Route path="/games/balatro/:id" element={<PokerRoguelike />} />
               <Route path="/productivity" element={<InterestCalculator />} />
               <Route path="/creative" element={<ImageStudio />} />
               <Route path="/travel" element={<TravelGuide />} />
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>
         </main>
-        
-        {/* Posición fija y z-index alto para evitar solapamientos */}
-        <div className="fixed top-5 right-5 z-[120]">
-          <ThemeToggle isDark={isDark} toggle={() => setIsDark(!isDark)} />
-        </div>
         
         <BottomNav />
       </div>

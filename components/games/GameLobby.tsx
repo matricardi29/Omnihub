@@ -9,6 +9,14 @@ const GameLobby: React.FC = () => {
 
   const games = [
     { 
+      id: 'balatro', 
+      name: 'Omni-Balatro', 
+      desc: 'Poker Roguelike. Chips, Mult y Jokers.',
+      icon: '🃏',
+      color: 'from-red-500 to-rose-700',
+      players: '1 Jug.'
+    },
+    { 
       id: 'scrabble', 
       name: 'Scrabble Master', 
       desc: 'Validación por IA en tiempo real.',
@@ -63,7 +71,7 @@ const GameLobby: React.FC = () => {
                 <div className="flex gap-2">
                   <button 
                     onClick={() => navigate(`/games/${game.id}/${Math.random().toString(36).substring(7)}`)}
-                    className="flex-1 py-2.5 bg-amber-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"
+                    className="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"
                   >
                     <Plus size={14} /> Jugar Ahora
                   </button>
@@ -75,11 +83,6 @@ const GameLobby: React.FC = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="bg-amber-600/5 border border-amber-500/20 rounded-[2rem] p-6 text-center space-y-3">
-        <p className="text-[9px] font-black text-amber-600 dark:text-amber-500 uppercase tracking-widest">Sincronización Real-Time</p>
-        <p className="text-[11px] font-bold text-slate-700 dark:text-slate-400 leading-relaxed">Invita a tus amigos compartiendo el ID de la sala.</p>
       </div>
     </div>
   );
