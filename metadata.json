@@ -1,0 +1,8 @@
+{
+  "name": "Omnihub",
+  "description": "A multipurpose platform featuring multiplayer games (Scrabble, Generala, Catan) and productivity tools like a compound interest calculator with investment tracking.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
