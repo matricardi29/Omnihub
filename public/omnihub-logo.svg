@@ -1,0 +1,48 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Omnihub Logo</title>
+  <desc id="desc">Brilliant neon planet with three orbiting spheres forming a colorful ring.</desc>
+  <defs>
+    <linearGradient id="ring" x1="72" y1="240" x2="448" y2="280" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#15d1ff" />
+      <stop offset="40%" stop-color="#7f5dff" />
+      <stop offset="75%" stop-color="#fa4c8a" />
+      <stop offset="100%" stop-color="#ffa45b" />
+    </linearGradient>
+    <radialGradient id="planet" cx="52%" cy="48%" r="60%">
+      <stop offset="0%" stop-color="#6dd0ff" />
+      <stop offset="45%" stop-color="#3880ff" />
+      <stop offset="100%" stop-color="#1c2d7a" />
+    </radialGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="80%" stop-color="#ffffff" stop-opacity="0.05" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+      <feOffset in="blur" dx="0" dy="12" result="offset"/>
+      <feMerge>
+        <feMergeNode in="offset" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <ellipse cx="256" cy="260" rx="212" ry="108" fill="none" stroke="url(#ring)" stroke-width="42" stroke-linecap="round" />
+    <ellipse cx="256" cy="260" rx="212" ry="108" fill="none" stroke="white" stroke-opacity="0.06" stroke-width="42" />
+  </g>
+  <g filter="url(#shadow)">
+    <circle cx="256" cy="240" r="136" fill="url(#planet)" />
+    <path d="M162 218c36-46 94-72 156-60 30 6 53 22 68 44-26 12-53 18-81 18-54 0-105-16-143-44z" fill="url(#glow)" opacity="0.7"/>
+    <path d="M196 208c-6 10-6 24 2 32 10 10 30 8 42-4 14-14 36-16 52-4 10 8 26 6 34-4s6-26-6-34c-38-26-92-22-124 14z" fill="#4dd0ff" opacity="0.35"/>
+    <path d="M282 152c-38 2-76 26-90 58 50 34 128 38 182 10-10-38-52-70-92-68z" fill="#0c1f5c" opacity="0.45"/>
+    <path d="M196 276c-28 2-34 26-18 38 30 22 100 28 152 8 18-6 24-30 6-42-34 20-82 28-140 0z" fill="#0a113b" opacity="0.45"/>
+  </g>
+  <g>
+    <circle cx="110" cy="230" r="38" fill="#5bc9ff" stroke="white" stroke-width="6" />
+    <circle cx="394" cy="186" r="36" fill="#ff8f38" stroke="white" stroke-width="6" />
+    <circle cx="374" cy="320" r="36" fill="#c04bff" stroke="white" stroke-width="6" />
+  </g>
+  <text x="256" y="450" text-anchor="middle" font-family="'Inter', 'Segoe UI', sans-serif" font-weight="900" font-size="82" fill="#6f6cf6" letter-spacing="-2">
+    Omni<tspan fill="#ff7fb2">hub</tspan>
+  </text>
+</svg>

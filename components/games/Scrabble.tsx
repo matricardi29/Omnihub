@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  ArrowLeft, Plus, Play, Pause, RotateCcw, 
+import {
+  ArrowLeft, Plus, Play, Pause, RotateCcw,
   CheckCircle2, Trophy, Trash2, BrainCircuit, Sparkles,
-  UserPlus, History, Loader2, XCircle, Hash
+  UserPlus, History, Loader2, XCircle, Hash, BookOpenText, Info, ShieldCheck
 } from 'lucide-react';
-import { getGameStrategy, validateScrabbleWord } from '../../services/geminiService';
+import { getGameStrategy, lookupWordMeaning, validateScrabbleWord } from '../../services/geminiService';
 
 interface Player {
   name: string;
@@ -35,7 +35,10 @@ const Scrabble: React.FC = () => {
   const [manualDesc, setManualDesc] = useState('');
   const [aiTip, setAiTip] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(false);
-  const [wordValidation, setWordValidation] = useState<{ isValid: boolean; reason?: string } | null>(null);
+  const [wordValidation, setWordValidation] = useState<{ isValid: boolean; reason?: string; existsInRAE?: boolean; definition?: string } | null>(null);
+  const [meaning, setMeaning] = useState<{ definition: string; example?: string; existsInRAE: boolean } | null>(null);
+  const [isFetchingMeaning, setIsFetchingMeaning] = useState(false);
+  const [raeError, setRaeError] = useState<string | null>(null);
   const [seconds, setSeconds] = useState(120);
   const [timerActive, setTimerActive] = useState(false);
 
@@ -52,6 +55,8 @@ const Scrabble: React.FC = () => {
   useEffect(() => {
     if (!word || word.length < 2) {
       setWordValidation(null);
+      setMeaning(null);
+      setRaeError(null);
       return;
     }
     const timer = setTimeout(async () => {
@@ -110,6 +115,20 @@ const Scrabble: React.FC = () => {
 
   const handleAiStrategy = async () => {
     setAiTip(await getGameStrategy('Scrabble', { players, word }));
+  };
+
+  const handleMeaningLookup = async () => {
+    if (!word) return;
+    setIsFetchingMeaning(true);
+    setRaeError(null);
+    try {
+      const result = await lookupWordMeaning(word);
+      setMeaning(result);
+    } catch (error) {
+      setRaeError('No pudimos consultar la RAE. Intenta de nuevo.');
+    } finally {
+      setIsFetchingMeaning(false);
+    }
   };
 
   if (!gameStarted) {
@@ -211,15 +230,60 @@ const Scrabble: React.FC = () => {
         {mode === 'word' ? (
           <div className="space-y-10 relative z-10">
             <div className="relative pt-4 text-center">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="ESCRIBE..."
                 value={word}
                 onChange={(e) => handleWordInput(e.target.value)}
-                className="w-full bg-transparent border-0 py-6 px-2 font-black text-5xl tracking-[0.2em] text-center text-[#fdfcf0] placeholder:text-white/10 focus:ring-0 uppercase drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]"
+                className="w-full bg-gradient-to-r from-white/10 via-white/5 to-white/10 border border-white/10 rounded-[2rem] py-6 px-6 font-black text-5xl tracking-[0.2em] text-center text-[#fdfcf0] placeholder:text-white/20 focus:ring-2 focus:ring-amber-500/60 uppercase drop-shadow-[0_4px_24px_rgba(0,0,0,0.35)] backdrop-blur"
               />
-              <div className="absolute right-0 top-1/2 -translate-y-1/2">
-                {isValidating ? <Loader2 className="animate-spin text-amber-500" /> : wordValidation && (wordValidation.isValid ? <CheckCircle2 className="text-emerald-400" /> : <XCircle className="text-red-500" />)}
+              <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                {isValidating ? <Loader2 className="animate-spin text-amber-300" /> : wordValidation && (wordValidation.isValid ? <CheckCircle2 className="text-emerald-400" /> : <XCircle className="text-red-400" />)}
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-2xl bg-white/10 border border-white/10 text-[#fdfcf0] shadow-lg">
+                <div className="flex items-center gap-2 text-xs uppercase font-black tracking-widest mb-2">
+                  <ShieldCheck size={16} className="text-emerald-300" /> Validez Scrabble
+                </div>
+                <p className={`font-black text-lg ${wordValidation?.isValid ? 'text-emerald-200' : 'text-red-200'}`}>
+                  {wordValidation?.isValid ? 'VÁLIDA' : word ? 'No válida' : 'Sin evaluar'}
+                </p>
+                <p className="text-sm text-white/70 mt-1 leading-snug">{wordValidation?.reason || 'Usa letras válidas y coloca multiplicadores antes de confirmar.'}</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/10 border border-white/10 text-[#fdfcf0] shadow-lg">
+                <div className="flex items-center gap-2 text-xs uppercase font-black tracking-widest mb-2">
+                  <BookOpenText size={16} className="text-amber-200" /> Registro RAE
+                </div>
+                <p className={`font-black text-lg ${wordValidation?.existsInRAE ? 'text-amber-200' : 'text-red-200'}`}>
+                  {wordValidation?.existsInRAE ? 'Registrada' : word ? 'No figura' : 'Pendiente'}
+                </p>
+                <p className="text-sm text-white/70 mt-1 leading-snug">{wordValidation?.existsInRAE ? 'Aparece en el diccionario oficial.' : 'Verifica ortografía o consulta definición.'}</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-amber-500/20 border border-amber-200/40 text-amber-50 shadow-lg space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs uppercase font-black tracking-widest">
+                    <Info size={16} /> Significado
+                  </div>
+                  <button
+                    onClick={handleMeaningLookup}
+                    disabled={!word || isFetchingMeaning}
+                    className="px-3 py-2 rounded-xl text-[11px] font-black bg-white/15 border border-white/30 hover:bg-white/25 disabled:opacity-30"
+                  >
+                    {isFetchingMeaning ? 'Buscando…' : 'Consultar'}
+                  </button>
+                </div>
+                {raeError && <p className="text-sm text-red-100">{raeError}</p>}
+                {!raeError && (meaning?.definition || wordValidation?.definition) && (
+                  <div className="text-sm leading-snug space-y-1">
+                    <p className="font-semibold text-white">{meaning?.definition || wordValidation?.definition}</p>
+                    {meaning?.example && <p className="text-white/80">Ejemplo: {meaning.example}</p>}
+                  </div>
+                )}
+                {!raeError && !(meaning?.definition || wordValidation?.definition) && (
+                  <p className="text-sm text-white/70">Obtén la definición breve directamente desde la RAE con un toque.</p>
+                )}
               </div>
             </div>
 
@@ -227,17 +291,17 @@ const Scrabble: React.FC = () => {
               <div className="absolute -inset-x-8 -bottom-4 h-24 bg-gradient-to-b from-[#78350f] to-[#3a1502] rounded-t-3xl shadow-2xl border-t border-white/10" />
               <div className="relative flex flex-wrap justify-center gap-3">
                 {word.split('').map((char, i) => (
-                  <button 
-                    key={i} 
+                  <button
+                    key={i}
                     onClick={() => toggleLetterMult(i)}
-                    className={`w-14 h-18 rounded-lg flex flex-col items-center justify-center font-black text-3xl shadow-[0_6px_0_rgba(0,0,0,0.3)] transition-all transform hover:-translate-y-1 active:translate-y-1 active:shadow-none ${
-                      letterMultipliers[i] === 2 ? 'bg-[#a3d8e5] text-slate-800' : 
-                      letterMultipliers[i] === 3 ? 'bg-[#007bb0] text-white' : 
+                    className={`w-16 h-20 rounded-2xl flex flex-col items-center justify-center font-black text-3xl shadow-[0_10px_0_rgba(0,0,0,0.3)] transition-all transform hover:-translate-y-1 active:translate-y-1 active:shadow-none ${
+                      letterMultipliers[i] === 2 ? 'bg-[#a3d8e5] text-slate-800' :
+                      letterMultipliers[i] === 3 ? 'bg-[#007bb0] text-white' :
                       'bg-[#fdfcf0] text-[#261e14]'
                     }`}
                   >
                     <span>{char}</span>
-                    <span className="absolute bottom-1 right-2 text-[10px] opacity-60">{LETTER_VALUES[char] || 0}</span>
+                    <span className="absolute bottom-2 right-3 text-[10px] opacity-60">{LETTER_VALUES[char] || 0}</span>
                   </button>
                 ))}
               </div>

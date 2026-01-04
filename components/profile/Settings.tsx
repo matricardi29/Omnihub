@@ -16,6 +16,11 @@ const Settings: React.FC<SettingsProps> = ({ isDark, toggleTheme, user }) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    if (!supabase) {
+      navigate('/');
+      return;
+    }
+
     await supabase.auth.signOut();
     navigate('/');
   };
