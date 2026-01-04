@@ -36,12 +36,16 @@ const Auth: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-[#050810] animate-in fade-in duration-700">
       <div className="w-full max-w-sm space-y-8">
-        <div className="text-center space-y-4">
-          <Logo size={64} className="mx-auto" variant="hub" />
-          <h1 className="text-4xl font-black tracking-tighter uppercase dark:text-white">
-            Omni<span className="text-indigo-600 italic">hub</span>
-          </h1>
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Intelligent Ecosystem</p>
+        <div className="flex flex-col items-center gap-2 text-center">
+          <div className="flex items-center gap-3 bg-white dark:bg-slate-900 px-4 py-3 rounded-2xl shadow-lg shadow-indigo-500/10 border border-slate-100 dark:border-white/5">
+            <Logo size={56} className="shrink-0" variant="hub" />
+            <div className="space-y-0.5">
+              <h1 className="text-3xl font-black tracking-tighter uppercase dark:text-white">
+                Omni<span className="text-indigo-600 italic">hub</span>
+              </h1>
+              <p className="text-[10px] font-black uppercase tracking-[0.35em] text-slate-400">Intelligent Ecosystem</p>
+            </div>
+          </div>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-[3rem] p-8 shadow-2xl relative overflow-hidden">
