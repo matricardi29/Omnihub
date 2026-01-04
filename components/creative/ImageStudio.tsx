@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, Image as ImageIcon, Wand2, Download, Upload, Loader2, Key, ExternalLink, PenTool, ArrowRight } from 'lucide-react';
-import { generateAiImage, editAiImage } from '../../services/geminiService';
+import { Sparkles, Image as ImageIcon, Wand2, Download, Upload, Loader2, Key, ExternalLink, PenTool, ArrowRight, Lightbulb } from 'lucide-react';
+import { generateAiImage, editAiImage, getOmniStudioIdea } from '../../services/geminiService';
 import Logo from '../ui/Logo';
 
 const ImageStudio: React.FC = () => {
@@ -9,6 +9,7 @@ const ImageStudio: React.FC = () => {
   const [prompt, setPrompt] = useState('');
   const [size, setSize] = useState<'1K' | '2K' | '4K'>('1K');
   const [loading, setLoading] = useState(false);
+  const [ideaLoading, setIdeaLoading] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
   const [sourceImage, setSourceImage] = useState<string | null>(null);
   const [hasApiKey, setHasApiKey] = useState<boolean>(true);
@@ -53,6 +54,18 @@ const ImageStudio: React.FC = () => {
       await handleSelectKey();
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleIdea = async () => {
+    setIdeaLoading(true);
+    try {
+      const idea = await getOmniStudioIdea("Propon una idea creativa breve para una ilustración llamativa y moderna en español.");
+      setPrompt(idea);
+    } catch (error) {
+      console.error("Error obteniendo idea:", error);
+    } finally {
+      setIdeaLoading(false);
     }
   };
 
@@ -126,13 +139,24 @@ const ImageStudio: React.FC = () => {
            )}
 
            <div className="space-y-4">
-              <label className="text-[10px] font-black uppercase text-slate-900 dark:text-slate-500 tracking-[0.2em] block">
-                Tu Visión Creativa
-              </label>
-              <textarea 
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Describe tu obra maestra aquí..."
+           <label className="text-[10px] font-black uppercase text-slate-900 dark:text-slate-500 tracking-[0.2em] block">
+              Tu Visión Creativa
+            </label>
+            <div className="flex justify-end mb-2">
+              <button
+                type="button"
+                onClick={handleIdea}
+                disabled={ideaLoading}
+                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-purple-600 dark:text-purple-300 disabled:opacity-40"
+              >
+                {ideaLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Lightbulb size={14} />}
+                Inspiración Gemini
+              </button>
+            </div>
+            <textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Describe tu obra maestra aquí..."
                 className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/5 rounded-[2rem] p-6 text-base font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 resize-none h-40"
               />
            </div>

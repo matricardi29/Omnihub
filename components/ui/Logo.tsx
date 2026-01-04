@@ -17,30 +17,22 @@ const Logo: React.FC<LogoProps> = ({ size = 32, className = "", showText = false
     travel: ['#06b6d4', '#0891b2'],
   };
 
-  const [primary, secondary] = colors[variant];
+  const [primary] = colors[variant];
+  const imageSize = Math.max(size * 1.8, size + 8);
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <div style={{ width: size, height: size }} className="relative shrink-0">
-        <div 
-          className="absolute inset-0 blur-xl opacity-20 transition-all duration-500" 
-          style={{ backgroundColor: primary }}
+      <div
+        style={{ width: imageSize, height: imageSize }}
+        className="relative shrink-0 overflow-hidden rounded-2xl shadow-lg ring-1 ring-slate-200/60 dark:ring-white/10 bg-slate-900/60"
+      >
+        <img
+          src="/omnihub-logo.svg"
+          alt="OmniHub logo"
+          loading="lazy"
+          className="w-full h-full object-cover"
         />
-        <svg viewBox="0 0 100 100" className="w-full h-full relative z-10" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id={`gl-${variant}`} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={primary} />
-              <stop offset="100%" stopColor={secondary} />
-            </linearGradient>
-          </defs>
-          <path 
-            d="M50 18 L78 34 L78 66 L50 82 L22 66 L22 34 Z" 
-            stroke={`url(#gl-${variant})`} 
-            strokeWidth="9" 
-            strokeLinejoin="round"
-          />
-          <circle cx="50" cy="50" r="9" fill={`url(#gl-${variant})`} />
-        </svg>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/30 mix-blend-screen" aria-hidden />
       </div>
       {showText && (
         <div className="flex flex-col -space-y-0.5">
