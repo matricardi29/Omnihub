@@ -146,21 +146,22 @@ export async function getTravelPlanning(destination: string, days: number): Prom
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `Planifica un viaje de ${days} días a ${destination}. 
+      contents: `Planifica un viaje de ${days} días a ${destination}.
       REQUISITO CRÍTICO: Divide tu respuesta EXACTAMENTE en estas 3 secciones usando estos encabezados de nivel 2:
       ## ITINERARIO
       (Plan día por día)
-      
+
       ## ATRACTIVOS
       (Sitios históricos o culturales con una breve descripción)
-      
+
       ## GASTRONOMÍA
-      (REQUISITO: Incluye platos típicos AND una lista de RESTAURANTES RECOMENDADOS con su especialidad)
-      
-      Estructura la gastronomía así: 
-      - Plato Típico: descripción
-      - Restaurante [Nombre]: especialidad y por qué ir.
-      
+      Debe incluir DOS bloques claros con subtítulo en mayúsculas:
+      PLATOS TÍPICOS:
+      - Nombre del plato: breve descripción y zona donde probarlo.
+
+      RESTAURANTES RECOMENDADOS:
+      - Restaurante [Nombre]: especialidad, zona y por qué ir.
+
       Sé conciso y usa puntos de viñeta.`,
       config: {
         tools: [{ googleMaps: {} }],

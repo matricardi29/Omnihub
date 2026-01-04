@@ -89,10 +89,51 @@ const TravelGuide: React.FC = () => {
       .map(line => {
         const cleanLine = line.trim().substring(1).trim();
         const parts = cleanLine.split(':');
-        return parts.length > 1 
+        return parts.length > 1
           ? { title: parts[0].trim(), description: parts.slice(1).join(':').trim() }
           : { title: cleanLine, description: "" };
       });
+  };
+
+  const parseGastronomy = (text: string) => {
+    const dishes: { title: string; description: string }[] = [];
+    const restaurants: { title: string; description: string }[] = [];
+
+    let mode: 'dishes' | 'restaurants' | null = null;
+
+    const pushLine = (line: string) => {
+      const cleanLine = line.trim().replace(/^[*-]\s*/, '');
+      if (!cleanLine) return;
+      const parts = cleanLine.split(':');
+      const entry = parts.length > 1
+        ? { title: parts[0].trim(), description: parts.slice(1).join(':').trim() }
+        : { title: cleanLine, description: "" };
+
+      if (mode === 'restaurants') {
+        restaurants.push(entry);
+      } else if (mode === 'dishes') {
+        dishes.push(entry);
+      }
+    };
+
+    text.split('\n').forEach((rawLine) => {
+      const line = rawLine.trim();
+      if (!line) return;
+      const upper = line.toUpperCase();
+      if (upper.includes('PLATOS T')) {
+        mode = 'dishes';
+        return;
+      }
+      if (upper.includes('RESTAURANTES')) {
+        mode = 'restaurants';
+        return;
+      }
+      if (line.startsWith('-') || line.startsWith('*')) {
+        pushLine(line);
+      }
+    });
+
+    return { dishes, restaurants };
   };
 
   return (
@@ -254,7 +295,7 @@ const TravelGuide: React.FC = () => {
           </div>
 
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-3xl p-5 shadow-sm min-h-[300px]">
-            {activeTab === 'itinerary' ? (
+            {activeTab === 'itinerary' && (
                <div className="space-y-5 relative before:absolute before:inset-y-0 before:left-2 before:w-px before:bg-slate-100 dark:before:bg-white/5">
                  {getSectionContent('ITINERARIO').split('\n').filter(l => l.trim().length > 0).map((line, idx) => {
                    const isDay = line.toLowerCase().includes('día');
@@ -268,9 +309,11 @@ const TravelGuide: React.FC = () => {
                    );
                  })}
                </div>
-            ) : (
+            )}
+
+            {activeTab === 'places' && (
               <div className="space-y-3">
-                {parseListItems(getSectionContent(activeTab === 'places' ? 'ATRACTIVOS' : 'GASTRONOMÍA')).map((item, i) => (
+                {parseListItems(getSectionContent('ATRACTIVOS')).map((item, i) => (
                   <div key={i} className="p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-white/5">
                     <h4 className="text-[11px] font-black text-cyan-700 dark:text-cyan-400 uppercase mb-0.5">{item.title}</h4>
                     {item.description && <p className="text-[10px] text-slate-500 font-medium leading-relaxed">{item.description}</p>}
@@ -278,6 +321,47 @@ const TravelGuide: React.FC = () => {
                 ))}
               </div>
             )}
+
+            {activeTab === 'food' && (() => {
+              const gastronomy = parseGastronomy(getSectionContent('GASTRONOMÍA'));
+              return (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 tracking-[0.25em]">
+                      <ChefHat size={14} className="text-cyan-600" /> Platos típicos
+                    </div>
+                    {gastronomy.dishes.length === 0 && (
+                      <p className="text-[11px] text-slate-400">Sin datos de platos típicos aún.</p>
+                    )}
+                    <div className="grid gap-2">
+                      {gastronomy.dishes.map((item, i) => (
+                        <div key={i} className="p-4 bg-gradient-to-br from-cyan-50 via-white to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 rounded-2xl border border-cyan-100 dark:border-white/5">
+                          <h4 className="text-[11px] font-black text-cyan-700 dark:text-cyan-400 uppercase mb-0.5">{item.title}</h4>
+                          {item.description && <p className="text-[10px] text-slate-600 dark:text-slate-400 leading-relaxed">{item.description}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 tracking-[0.25em]">
+                      <MapPin size={14} className="text-amber-500" /> Restaurantes recomendados
+                    </div>
+                    {gastronomy.restaurants.length === 0 && (
+                      <p className="text-[11px] text-slate-400">Sin recomendaciones de restaurantes todavía.</p>
+                    )}
+                    <div className="grid gap-2">
+                      {gastronomy.restaurants.map((item, i) => (
+                        <div key={i} className="p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-amber-100/60 dark:border-white/5">
+                          <h4 className="text-[11px] font-black text-amber-700 dark:text-amber-300 uppercase mb-0.5">{item.title}</h4>
+                          {item.description && <p className="text-[10px] text-slate-600 dark:text-slate-400 leading-relaxed">{item.description}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
