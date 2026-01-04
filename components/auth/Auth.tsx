@@ -17,7 +17,11 @@ const Auth: React.FC = () => {
     setError(null);
 
     try {
-      const { error } = isSignUp 
+      if (!supabase) {
+        throw new Error('Configura las credenciales de Supabase antes de continuar.');
+      }
+
+      const { error } = isSignUp
         ? await supabase.auth.signUp({ email, password })
         : await supabase.auth.signInWithPassword({ email, password });
 
