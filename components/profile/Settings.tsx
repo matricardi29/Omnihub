@@ -1,8 +1,8 @@
 
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { ArrowLeft, LogOut, Shield, Bell, Moon, Sun, User, ChevronRight, Sparkles } from 'lucide-react';
+import { ArrowLeft, LogOut, Shield, Bell, Moon, Sun, User, ChevronRight, Sparkles, KeyRound, Save, Trash } from 'lucide-react';
 import ThemeToggle from '../ui/ThemeToggle';
 import Logo from '../ui/Logo';
 
@@ -14,6 +14,16 @@ interface SettingsProps {
 
 const Settings: React.FC<SettingsProps> = ({ isDark, toggleTheme, user }) => {
   const navigate = useNavigate();
+  const [geminiKey, setGeminiKey] = useState('');
+  const [keySaved, setKeySaved] = useState(false);
+
+  const isAdmin = useMemo(() => user?.email === 'jmatricardi29@gmail.com', [user?.email]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return;
+    const stored = window.localStorage.getItem('omnihub.gemini.apiKey') || '';
+    setGeminiKey(stored);
+  }, []);
 
   const handleLogout = async () => {
     if (!supabase) {
@@ -23,6 +33,21 @@ const Settings: React.FC<SettingsProps> = ({ isDark, toggleTheme, user }) => {
 
     await supabase.auth.signOut();
     navigate('/');
+  };
+
+  const handleSaveKey = () => {
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return;
+    if (!geminiKey) return;
+
+    window.localStorage.setItem('omnihub.gemini.apiKey', geminiKey.trim());
+    setKeySaved(true);
+    setTimeout(() => setKeySaved(false), 2000);
+  };
+
+  const handleClearKey = () => {
+    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return;
+    window.localStorage.removeItem('omnihub.gemini.apiKey');
+    setGeminiKey('');
   };
 
   return (
@@ -85,6 +110,54 @@ const Settings: React.FC<SettingsProps> = ({ isDark, toggleTheme, user }) => {
           ))}
         </div>
       </div>
+
+      {isAdmin && (
+        <div className="space-y-3">
+          <h4 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] px-4">Panel Admin</h4>
+          <div className="bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-500/40 rounded-[2.5rem] p-5 shadow-lg space-y-4">
+            <div className="flex items-center gap-3 p-4 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl border border-indigo-100 dark:border-indigo-500/30">
+              <KeyRound className="text-indigo-600" size={18} />
+              <div>
+                <p className="text-xs font-black uppercase tracking-tight dark:text-white">Gemini API Key</p>
+                <p className="text-[9px] font-bold text-slate-500 uppercase">Solo visible para el administrador</p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest ml-2">Clave privada</label>
+              <input
+                type="password"
+                value={geminiKey}
+                onChange={(e) => setGeminiKey(e.target.value)}
+                placeholder="gx-..."
+                className="w-full rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/10 px-4 py-3 font-mono text-xs"
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleSaveKey}
+                className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-[10px] uppercase tracking-[0.25em] flex items-center justify-center gap-2"
+              >
+                <Save size={14} /> Guardar
+              </button>
+              <button
+                onClick={handleClearKey}
+                className="p-3 rounded-xl border border-slate-200 dark:border-white/10 text-slate-500 hover:text-red-500 hover:border-red-200 dark:hover:border-red-400"
+                title="Eliminar clave almacenada"
+              >
+                <Trash size={14} />
+              </button>
+            </div>
+
+            {keySaved && (
+              <div className="text-[10px] font-black text-green-600 dark:text-green-400 uppercase tracking-[0.25em] text-center flex items-center justify-center gap-2">
+                <Sparkles size={14} /> Clave guardada localmente
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <button 
         onClick={handleLogout}

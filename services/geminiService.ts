@@ -3,14 +3,20 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { CompoundInterestConfig } from "../types";
 
 const getGeminiApiKey = () => {
+  const storedKey =
+    typeof window !== "undefined" && typeof window.localStorage !== "undefined"
+      ? window.localStorage.getItem("omnihub.gemini.apiKey") || undefined
+      : undefined;
+
   const key =
+    storedKey ||
     process.env.GEMINI_API_KEY ||
     process.env.API_KEY ||
     // Vite client builds expose env vars under import.meta.env
     (typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_GEMINI_API_KEY : undefined);
 
   if (!key) {
-    throw new Error("No se encontró la API key. Configura GEMINI_API_KEY en tu entorno.");
+    throw new Error("No se encontró la API key. Configura GEMINI_API_KEY o guárdala en Ajustes.");
   }
 
   if (key.includes("AIzaSyBUKywevHss4VCuIv-iWcBvPERmX7j7nrk")) {
