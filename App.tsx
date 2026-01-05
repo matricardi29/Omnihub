@@ -9,6 +9,7 @@ import Generala from './components/games/Generala';
 import Scrabble from './components/games/Scrabble';
 import Catan from './components/games/Catan';
 import PokerRoguelike from './components/games/PokerRoguelike';
+import WhiteoutSurvival from './components/games/WhiteoutSurvival';
 import InterestCalculator from './components/productivity/InterestCalculator';
 import ImageStudio from './components/creative/ImageStudio';
 import TravelGuide from './components/travel/TravelGuide';
@@ -125,6 +126,7 @@ const App: React.FC = () => {
               <Route path="/games/scrabble/:id" element={<Scrabble />} />
               <Route path="/games/catan/:id" element={<Catan />} />
               <Route path="/games/balatro/:id" element={<PokerRoguelike />} />
+              <Route path="/games/whiteout/:id" element={<WhiteoutSurvival />} />
               <Route path="/productivity" element={<InterestCalculator />} />
               <Route path="/creative" element={<ImageStudio />} />
               <Route path="/travel" element={<TravelGuide />} />

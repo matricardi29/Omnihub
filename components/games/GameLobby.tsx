@@ -24,17 +24,25 @@ const GameLobby: React.FC = () => {
       color: 'from-amber-500 to-orange-600',
       players: '2-4 Jug.'
     },
-    { 
-      id: 'generala', 
-      name: 'Generala Pro', 
+    {
+      id: 'generala',
+      name: 'Generala Pro',
       desc: 'Clásico juego de dados digital.',
       icon: '🎲',
       color: 'from-blue-500 to-indigo-600',
       players: '1-6 Jug.'
     },
-    { 
-      id: 'catan', 
-      name: 'Catan Sync', 
+    {
+      id: 'whiteout',
+      name: 'Whiteout Survival',
+      desc: 'Gestiona colonos, sopa y calor en la ventisca.',
+      icon: '❄️',
+      color: 'from-sky-500 to-indigo-600',
+      players: '1 Jug.'
+    },
+    {
+      id: 'catan',
+      name: 'Catan Sync',
       desc: 'Estrategia y recursos compartidos.',
       icon: '⛰️',
       color: 'from-emerald-500 to-teal-600',
