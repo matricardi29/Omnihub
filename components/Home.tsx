@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Gamepad2, TrendingUp, Bell, Clock, Sparkles, Compass, ChevronRight, User } from 'lucide-react';
+import { Gamepad2, TrendingUp, Bell, Clock, Sparkles, Compass, ChevronRight, User, Dumbbell } from 'lucide-react';
 import Logo from './ui/Logo';
 
 interface HomeProps {
@@ -62,6 +62,14 @@ const Home: React.FC<HomeProps> = ({ user }) => {
           </div>
           <h4 className="text-[11px] font-black uppercase tracking-tight">Omni-Travel</h4>
           <span className="text-[7px] font-bold text-slate-400 uppercase tracking-widest">Smart Guide</span>
+        </Link>
+
+        <Link to="/gym" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl p-4 shadow-sm active:scale-95 transition-all group">
+          <div className="w-9 h-9 bg-pink-50 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 rounded-lg flex items-center justify-center mb-3">
+            <Dumbbell size={20} />
+          </div>
+          <h4 className="text-[11px] font-black uppercase tracking-tight">Omni-Gym</h4>
+          <span className="text-[7px] font-bold text-slate-400 uppercase tracking-widest">Rutinas & seguimiento</span>
         </Link>
       </div>
 

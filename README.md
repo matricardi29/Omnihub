@@ -21,3 +21,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/1PyZBXmU5QK0B6YcQpZUrkb
    - `VITE_SUPABASE_ANON_KEY` = `sb_publishable_ed6BKpgSMqbG3mxcKzGlVA_2iY2HT4l`
 3. Run the app:
    `npm run dev`
+
+## Gym coach & tracker
+
+Desde la pestaña **Omni-Gym** puedes generar rutinas por objetivo, equipo disponible y zonas prioritarias. Cada ejercicio incluye sets, repeticiones, descanso y un registro rápido para anotar peso, repes, sensación y notas, con historial visual y porcentaje de cumplimiento calculado automáticamente.

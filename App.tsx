@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Gamepad2, TrendingUp, Sparkles, Compass } from 'lucide-react';
+import { LayoutDashboard, Gamepad2, TrendingUp, Sparkles, Compass, Dumbbell } from 'lucide-react';
 import { supabase, supabaseConfigError } from './lib/supabase';
 import Home from './components/Home';
 import GameLobby from './components/games/GameLobby';
@@ -12,6 +12,7 @@ import PokerRoguelike from './components/games/PokerRoguelike';
 import InterestCalculator from './components/productivity/InterestCalculator';
 import ImageStudio from './components/creative/ImageStudio';
 import TravelGuide from './components/travel/TravelGuide';
+import GymCoach from './components/fitness/GymCoach';
 import Settings from './components/profile/Settings';
 import Auth from './components/auth/Auth';
 
@@ -23,6 +24,7 @@ const BottomNav = () => {
     { path: '/creative', icon: Sparkles, label: 'Studio', variant: 'studio' as const },
     { path: '/travel', icon: Compass, label: 'Travel', variant: 'travel' as const },
     { path: '/productivity', icon: TrendingUp, label: 'Finance', variant: 'finance' as const },
+    { path: '/gym', icon: Dumbbell, label: 'Gym', variant: 'gym' as const },
   ];
 
   return (
@@ -35,7 +37,8 @@ const BottomNav = () => {
             games: 'text-amber-600 dark:text-amber-500',
             studio: 'text-purple-600 dark:text-purple-400',
             travel: 'text-cyan-600 dark:text-cyan-400',
-            finance: 'text-emerald-600 dark:text-emerald-400'
+            finance: 'text-emerald-600 dark:text-emerald-400',
+            gym: 'text-pink-600 dark:text-pink-400'
           };
 
           return (
@@ -125,6 +128,7 @@ const App: React.FC = () => {
               <Route path="/productivity" element={<InterestCalculator />} />
               <Route path="/creative" element={<ImageStudio />} />
               <Route path="/travel" element={<TravelGuide />} />
+              <Route path="/gym" element={<GymCoach user={session.user} />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>
